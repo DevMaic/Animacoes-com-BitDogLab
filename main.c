@@ -89,13 +89,8 @@ char detectar_tecla()
 
 //número de LEDs
 #define NUM_PIXELS 25
-
 //pino de saída
 #define OUT_PIN 9
-
-//botão de interupção
-const uint button_0 = 5;
-const uint button_1 = 6;
 
 //vetor para criar imagem na matriz de led - 1
 double desenho[25] =   {0.0, 0.0, 0.0, 0.0, 1.0,
@@ -118,8 +113,7 @@ double desenho2[25] =   {1.0, 0.0, 0.0, 0.0, 1.0,
                         1.0, 0.0, 0.0, 0.0, 1.0};
 
 //rotina para definição da intensidade de cores do led
-uint32_t matrix_rgb(double b, double r, double g)
-{
+uint32_t matrix_rgb(double b, double r, double g) {
   unsigned char R, G, B;
   R = r * 255;
   G = g * 255;
@@ -148,15 +142,6 @@ void desenho_pio(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r
 //Funções com as animações dos membros do grupo
 void animacaoMaic(double desenho1[], uint32_t valor_led, PIO pio, uint sm, double r, double g, double b) {
     desenho_pio(desenho1, valor_led, pio, sm, r, g, b);
-    // for(int i = 0, j = 9; i < 4; i++, j--) {
-    //     desenho1[i] = desenho1[i+1];
-    //     desenho1[i+5] = desenho1[i+6];
-    //     // desenho1[i+10] = desenho1[i+1];
-    //     // desenho1[j] = desenho1[(i/5)%2==0?i+16:i-16];
-    //     // desenho1[i+20] = desenho1[(i/5)%2==0?i+21:i-21];
-    // }
-    // sleep_ms(500);
-    // desenho_pio(limpaLeds, valor_led, pio, sm, r, g, b);
 }
 
 //função principal
@@ -187,16 +172,6 @@ int main()
     uint sm = pio_claim_unused_sm(pio, true);
     pio_matrix_program_init(pio, sm, offset, OUT_PIN);
 
-    //inicializar o botão de interrupção - GPIO5
-    // gpio_init(button_0);
-    // gpio_set_dir(button_0, GPIO_IN);
-    // gpio_pull_up(button_0);
-
-    // //inicializar o botão de interrupção - GPIO5
-    // gpio_init(button_1);
-    // gpio_set_dir(button_1, GPIO_IN);
-    // gpio_pull_up(button_1);
-
     gpio_init(GPIO_LED);
     gpio_set_dir(GPIO_LED, GPIO_OUT);
 
@@ -206,11 +181,6 @@ int main()
 
     //   Avaliação de caractere para o LED
       if (caracter_press != '\0') {
-            
-            if(caracter_press=='*') {
-                animacaoMaic(desenho, valor_led, pio, sm, r, g, b);
-                gpio_put(GPIO_LED, true);
-            }
             if(caracter_press=='0') {
                 animacaoMaic(desenho, valor_led, pio, sm, r, g, b);
                 gpio_put(GPIO_LED, false);
@@ -218,6 +188,5 @@ int main()
       }
 
       sleep_ms(100);
-      printf("\nfrequeência de clock %ld\r\n", clock_get_hz(clk_sys));
     }
 }
