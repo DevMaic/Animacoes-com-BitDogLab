@@ -150,38 +150,59 @@ void animacaoMaic(double desenho1[], uint32_t valor_led, PIO pio, uint sm, doubl
     desenho_pio(desenho1, valor_led, pio, sm, r, g, b);
 }
 
-// Definição dos frames da animação ao apertar a tecla 3
-double frame_t3_1[25] = {1.0, 0.0, 0.0, 0.0, 0.0,
-                         1.0, 0.0, 0.0, 0.0, 0.0,
-                         1.0, 0.0, 0.0, 0.0, 0.0,
-                         1.0, 0.0, 0.0, 0.0, 0.0,
-                         1.0, 0.0, 0.0, 0.0, 0.0};
+// Função animação da tecla 3
+void animacao_tecla_3(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b, int fps)
+{
+    // Definição dos frames da animação ao apertar a tecla 3
+    double frame_t3_1[25] = {1.0, 0.0, 0.0, 0.0, 0.0,
+                             1.0, 0.0, 0.0, 0.0, 0.0,
+                             1.0, 0.0, 0.0, 0.0, 0.0,
+                             1.0, 0.0, 0.0, 0.0, 0.0,
+                             1.0, 0.0, 0.0, 0.0, 0.0};
 
-double frame_t3_2[25] = {0.0, 1.0, 0.0, 0.0, 0.0,
-                         0.0, 1.0, 0.0, 0.0, 0.0,
-                         0.0, 1.0, 0.0, 0.0, 0.0,
-                         0.0, 1.0, 0.0, 0.0, 0.0,
-                         0.0, 1.0, 0.0, 0.0, 0.0};
+    double frame_t3_2[25] = {0.0, 1.0, 0.0, 0.0, 0.0,
+                             0.0, 1.0, 0.0, 0.0, 0.0,
+                             0.0, 1.0, 0.0, 0.0, 0.0,
+                             0.0, 1.0, 0.0, 0.0, 0.0,
+                             0.0, 1.0, 0.0, 0.0, 0.0};
 
-double frame_t3_3[25] = {0.0, 0.0, 1.0, 0.0, 0.0,
-                         0.0, 0.0, 1.0, 0.0, 0.0,
-                         0.0, 0.0, 1.0, 0.0, 0.0,
-                         0.0, 0.0, 1.0, 0.0, 0.0,
-                         0.0, 0.0, 1.0, 0.0, 0.0};
+    double frame_t3_3[25] = {0.0, 0.0, 1.0, 0.0, 0.0,
+                             0.0, 0.0, 1.0, 0.0, 0.0,
+                             0.0, 0.0, 1.0, 0.0, 0.0,
+                             0.0, 0.0, 1.0, 0.0, 0.0,
+                             0.0, 0.0, 1.0, 0.0, 0.0};
 
-double frame_t3_4[25] = {0.0, 0.0, 0.0, 1.0, 0.0,
-                         0.0, 0.0, 0.0, 1.0, 0.0,
-                         0.0, 0.0, 0.0, 1.0, 0.0,
-                         0.0, 0.0, 0.0, 1.0, 0.0,
-                         0.0, 0.0, 0.0, 1.0, 0.0};
+    double frame_t3_4[25] = {0.0, 0.0, 0.0, 1.0, 0.0,
+                             0.0, 0.0, 0.0, 1.0, 0.0,
+                             0.0, 0.0, 0.0, 1.0, 0.0,
+                             0.0, 0.0, 0.0, 1.0, 0.0,
+                             0.0, 0.0, 0.0, 1.0, 0.0};
 
-double frame_t3_5[25] = {0.0, 0.0, 0.0, 0.0, 1.0,
-                         0.0, 0.0, 0.0, 0.0, 1.0,
-                         0.0, 0.0, 0.0, 0.0, 1.0,
-                         0.0, 0.0, 0.0, 0.0, 1.0,
-                         0.0, 0.0, 0.0, 0.0, 1.0};
+    double frame_t3_5[25] = {0.0, 0.0, 0.0, 0.0, 1.0,
+                             0.0, 0.0, 0.0, 0.0, 1.0,
+                             0.0, 0.0, 0.0, 0.0, 1.0,
+                             0.0, 0.0, 0.0, 0.0, 1.0,
+                             0.0, 0.0, 0.0, 0.0, 1.0};
+    // Fim definição dos frames da animação ao apertar a tecla 3
 
-// Fim definição dos frames da animação ao apertar a tecla 3
+    // Vetor de frames
+    double *frames[5] = {frame_t3_1, frame_t3_2, frame_t3_3, frame_t3_4, frame_t3_5};
+    int frame_index = 0;
+
+    // Loop para alternar os frames
+    while (true)
+    {
+        // Atualiza os LEDs com o frame atual
+        desenho_pio(frames[frame_index], valor_led, pio, sm, r, g, b);
+
+        // Passa para o próximo frame
+        frame_index = (frame_index + 1) % 5; // Alterna entre 0 a 4
+
+        // Espera até o próximo quadro para manter o FPS
+        sleep_ms(1000 / fps);
+    }
+}
+// Fim da função animação da tecla 3
 
 // função principal
 int main()
@@ -227,6 +248,11 @@ int main()
             {
                 animacaoMaic(desenho, valor_led, pio, sm, r, g, b);
                 gpio_put(GPIO_LED, false);
+            }
+            // Aciona a animação na tecla 3
+            else if (caracter_press == '3')
+            {
+                animacao_tecla_3(pio, sm, valor_led, r, g, b, 10);
             }
         }
 
