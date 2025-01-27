@@ -164,6 +164,17 @@ void animacaoHumbertoZigZag(PIO pio, uint sm, uint32_t valor_led, double r, doub
     }
 }
 
+
+void animacaoGabrielRostoMicrobit(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
+    for (int repeat = 0; repeat < 5; repeat++) { // Repetir a animação 5 vezes
+        for (int frame = 0; frame < 5; frame++) {
+            desenho_pio(frames_rosto_microbit[frame], valor_led, pio, sm, r, g, b);
+            sleep_ms(500); // Pausa de 500ms entre os frames
+        }
+    }
+}
+
+
 //função principal
 int main()
 {
@@ -206,8 +217,10 @@ int main()
                 gpio_put(GPIO_LED, false);
             }else if(caracter_press == '1'){
                  animacaoHumbertoZigZag(pio, sm, valor_led, r, g, b);
+            }else if (caracter_press == '2') {
+                animacaoGabrielRostoMicrobit(pio, sm, valor_led, r, g, b);
             }
-      }
+        }
 
       sleep_ms(100);
     }
