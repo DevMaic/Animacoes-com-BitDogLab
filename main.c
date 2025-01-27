@@ -95,26 +95,6 @@ char detectar_tecla()
 // pino de saída
 #define OUT_PIN 9
 
-// vetor para criar imagem na matriz de led - 1
-double desenho[25] = {0.0, 0.0, 0.0, 0.0, 1.0,
-                      1.0, 0.0, 0.0, 0.0, 0.0,
-                      0.0, 0.0, 0.0, 0.0, 1.0,
-                      0.0, 0.0, 0.0, 0.0, 1.0,
-                      0.0, 0.0, 0.0, 0.0, 1.0};
-
-double limpaLeds[25] = {0.0, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0};
-
-// vetor para criar imagem na matriz de led - 2
-double desenho2[25] = {1.0, 0.0, 0.0, 0.0, 1.0,
-                       0.0, 1.0, 0.0, 1.0, 0.0,
-                       0.0, 0.0, 1.0, 0.0, 0.0,
-                       0.0, 1.0, 0.0, 1.0, 0.0,
-                       1.0, 0.0, 0.0, 0.0, 1.0};
-
 // rotina para definição da intensidade de cores do led
 uint32_t matrix_rgb(double b, double r, double g) {
     unsigned char R, G, B;
@@ -129,15 +109,26 @@ void desenho_pio(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r
 {
     for (int16_t i = 0; i < NUM_PIXELS; i++)
     {
-        if (i % 2 == 0)
+        if(r==1.0 && g==1.0 && b==1.0)
         {
-            valor_led = matrix_rgb(desenho[24 - i], r = 0.0, g = 0.0);
+            valor_led = matrix_rgb(desenho[24 - i], desenho[24 - i], desenho[24 - i]);
             pio_sm_put_blocking(pio, sm, valor_led);
-        }
-        else
-        {
-            valor_led = matrix_rgb(desenho[24 - i], r = 0.0, g = 0.0);
-            pio_sm_put_blocking(pio, sm, valor_led);
+        } else {
+            if (b == 1.0)
+            {
+                valor_led = matrix_rgb(desenho[24 - i], r = 0.0, g = 0.0);
+                pio_sm_put_blocking(pio, sm, valor_led);
+            }
+            if(r == 1.0)
+            {
+                valor_led = matrix_rgb(b = 0.0, desenho[24 - i], g = 0.0);
+                pio_sm_put_blocking(pio, sm, valor_led);
+            }
+            if(g == 1.0)
+            {
+                valor_led = matrix_rgb(b = 0.0, r = 0.0, desenho[24 - i]);
+                pio_sm_put_blocking(pio, sm, valor_led);
+            }
         }
     }
     imprimir_binario(valor_led);
@@ -145,17 +136,17 @@ void desenho_pio(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r
 // fim do código da matriz de leds
 
 // Funções com as animações dos membros do grupo
-void animacaoMaic(double desenho1[], uint32_t valor_led, PIO pio, uint sm, double r, double g, double b)
+void animacaoMaic(uint32_t valor_led, PIO pio, uint sm, double r, double g, double b)
 {
     // Exibe cada frame por 100 ms (FPS = 10)
     for (int i = 0; i < 25; i++) {
-        desenho_pio(framesMaic[i], valor_led, pio, sm, r, g, b);
+        desenho_pio(framesMaic[i], valor_led, pio, sm, r, g, 1);
         sleep_ms(100); // Delay para controlar o FPS
     }
 
     // Volta ao início
     for (int i = 24; i >= 0; i--) {
-        desenho_pio(framesMaic[i], valor_led, pio, sm, r, g, b);
+        desenho_pio(framesMaic[i], valor_led, pio, sm, r, g, 1);
         sleep_ms(100); // Delay para controlar o FPS
     }
 }
@@ -252,7 +243,6 @@ int main()
         printf("clock set to %ld\n", clock_get_hz(clk_sys));
 
     // configuração do teclado
-    //  pico_keypad_init(columns, rows, KEY_MAP);
     char caracter_press;
 
     // configurações da PIO
@@ -271,19 +261,24 @@ int main()
         //   Avaliação de caractere para o LED
         if (caracter_press != '\0')
         {
-            if (caracter_press == '0')
-            {
-                animacaoMaic(desenho, valor_led, pio, sm, r, g, b);
-            }else if(caracter_press == '1'){
-                 animacaoHumbertoZigZag(pio, sm, valor_led, r, g, b);
+            if(caracter_press == '0') {
+                animacaoMaic(valor_led, pio, sm, r, g, 1);
+            } else if(caracter_press == '1') {
+                 animacaoHumbertoZigZag(pio, sm, valor_led, r, g, 1);
+            } else if(caracter_press == '3') {
+                animacao_tecla_3(pio, sm, valor_led, r, g, 1, 10);
+            } else if(caracter_press == 'A') {
+                desenho_pio(desenhoTeclaA, valor_led, pio, sm, r, g, 1);
+            } else if(caracter_press == 'B') {
+                desenho_pio(desenhoTeclaB, valor_led, pio, sm, r, g, 1);
+            } else if(caracter_press == 'C') {
+                desenho_pio(desenhoTeclaC, valor_led, pio, sm, 1, g, b);
+            } else if(caracter_press == 'D') {
+                desenho_pio(desenhoTeclaD, valor_led, pio, sm, r, 1, b);
+            } else if(caracter_press == '#') {
+                desenho_pio(desenhoTeclaSerquilha, valor_led, pio, sm, 1, 1, 1);
             }
-            // Aciona a animação na tecla 3
-            else if (caracter_press == '3')
-            {
-                animacao_tecla_3(pio, sm, valor_led, r, g, b, 10);
-            } 
         }
-
         sleep_ms(100);
     }
 }
