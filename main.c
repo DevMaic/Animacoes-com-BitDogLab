@@ -147,7 +147,17 @@ void desenho_pio(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r
 // Funções com as animações dos membros do grupo
 void animacaoMaic(double desenho1[], uint32_t valor_led, PIO pio, uint sm, double r, double g, double b)
 {
-    desenho_pio(desenho1, valor_led, pio, sm, r, g, b);
+    // Exibe cada frame por 100 ms (FPS = 10)
+    for (int i = 0; i < 25; i++) {
+        desenho_pio(framesMaic[i], valor_led, pio, sm, r, g, b);
+        sleep_ms(100); // Delay para controlar o FPS
+    }
+
+    // Volta ao início
+    for (int i = 24; i >= 0; i--) {
+        desenho_pio(framesMaic[i], valor_led, pio, sm, r, g, b);
+        sleep_ms(100); // Delay para controlar o FPS
+    }
 }
 
 // Função animação da tecla 3
@@ -188,9 +198,10 @@ void animacao_tecla_3(PIO pio, uint sm, uint32_t valor_led, double r, double g, 
     // Vetor de frames
     double *frames[5] = {frame_t3_1, frame_t3_2, frame_t3_3, frame_t3_4, frame_t3_5};
     int frame_index = 0;
+    int contador = 0;
 
     // Loop para alternar os frames
-    while (true)
+    while (contador < 50)
     {
         // Atualiza os LEDs com o frame atual
         desenho_pio(frames[frame_index], valor_led, pio, sm, r, g, b);
@@ -200,24 +211,23 @@ void animacao_tecla_3(PIO pio, uint sm, uint32_t valor_led, double r, double g, 
 
         // Espera até o próximo quadro para manter o FPS
         sleep_ms(1000 / fps);
+
+        contador++;
     }
 }
 // Fim da função animação da tecla 3
 
 void animacaoHumbertoZigZag(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
-    // Loop para exibir a animação em loop
-    while (true) {
-        // Exibe cada frame por 100 ms (FPS = 10)
-        for (int i = 0; i < 25; i++) {
-            desenho_pio(frames[i], valor_led, pio, sm, r, g, b);
-            sleep_ms(100); // Delay para controlar o FPS
-        }
+    // Exibe cada frame por 100 ms (FPS = 10)
+    for (int i = 0; i < 25; i++) {
+        desenho_pio(framesHumberto[i], valor_led, pio, sm, r, g, b);
+        sleep_ms(100); // Delay para controlar o FPS
+    }
 
-        // Volta ao início
-        for (int i = 24; i >= 0; i--) {
-            desenho_pio(frames[i], valor_led, pio, sm, r, g, b);
-            sleep_ms(100); // Delay para controlar o FPS
-        }
+    // Volta ao início
+    for (int i = 24; i >= 0; i--) {
+        desenho_pio(framesHumberto[i], valor_led, pio, sm, r, g, b);
+        sleep_ms(100); // Delay para controlar o FPS
     }
 }
 
@@ -264,7 +274,6 @@ int main()
             if (caracter_press == '0')
             {
                 animacaoMaic(desenho, valor_led, pio, sm, r, g, b);
-                gpio_put(GPIO_LED, false);
             }else if(caracter_press == '1'){
                  animacaoHumbertoZigZag(pio, sm, valor_led, r, g, b);
             }
@@ -272,7 +281,7 @@ int main()
             else if (caracter_press == '3')
             {
                 animacao_tecla_3(pio, sm, valor_led, r, g, b, 10);
-            }
+            } 
         }
 
         sleep_ms(100);
