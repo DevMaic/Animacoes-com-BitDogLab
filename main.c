@@ -7,6 +7,8 @@
 #include "hardware/adc.h"
 #include "pico/bootrom.h"
 #include "hardware/timer.h"
+#include "framesAnimacao.c"
+
 //arquivo .pio
 #include "pio_matrix.pio.h"
 //define o LED de saída
@@ -112,6 +114,7 @@ double desenho2[25] =   {1.0, 0.0, 0.0, 0.0, 1.0,
                         0.0, 1.0, 0.0, 1.0, 0.0,
                         1.0, 0.0, 0.0, 0.0, 1.0};
 
+
 //rotina para definição da intensidade de cores do led
 uint32_t matrix_rgb(double b, double r, double g) {
   unsigned char R, G, B;
@@ -142,6 +145,23 @@ void desenho_pio(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r
 //Funções com as animações dos membros do grupo
 void animacaoMaic(double desenho1[], uint32_t valor_led, PIO pio, uint sm, double r, double g, double b) {
     desenho_pio(desenho1, valor_led, pio, sm, r, g, b);
+}
+
+void animacaoHumbertoZigZag(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
+    // Loop para exibir a animação em loop
+    while (true) {
+        // Exibe cada frame por 100 ms (FPS = 10)
+        for (int i = 0; i < 25; i++) {
+            desenho_pio(frames[i], valor_led, pio, sm, r, g, b);
+            sleep_ms(100); // Delay para controlar o FPS
+        }
+
+        // Volta ao início
+        for (int i = 24; i >= 0; i--) {
+            desenho_pio(frames[i], valor_led, pio, sm, r, g, b);
+            sleep_ms(100); // Delay para controlar o FPS
+        }
+    }
 }
 
 //função principal
@@ -184,6 +204,8 @@ int main()
             if(caracter_press=='0') {
                 animacaoMaic(desenho, valor_led, pio, sm, r, g, b);
                 gpio_put(GPIO_LED, false);
+            }else if(caracter_press == '1'){
+                 animacaoHumbertoZigZag(pio, sm, valor_led, r, g, b);
             }
       }
 
