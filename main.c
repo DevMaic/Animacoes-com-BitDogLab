@@ -7,12 +7,13 @@
 #include "hardware/adc.h"
 #include "pico/bootrom.h"
 #include "hardware/timer.h"
-// arquivo .pio
+//frames das animações
+#include "framesAnimacao.c"
+//arquivo .pio
 #include "pio_matrix.pio.h"
 // define o LED de saída
-#define GPIO_LED 13
-
 #include "animacoesKaique.h"
+#define GPIO_LED 13
 
 // parte do código relativa ao teclado matricial
 uint columns[4] = {4, 3, 2, 1};
@@ -95,23 +96,8 @@ char detectar_tecla()
 // pino de saída
 #define OUT_PIN 9
 
-// vetor para criar imagem na matriz de led - 1
-double desenho[25] = {0.0, 0.0, 0.0, 0.0, 1.0,
-                      1.0, 0.0, 0.0, 0.0, 0.0,
-                      0.0, 0.0, 0.0, 0.0, 1.0,
-                      0.0, 0.0, 0.0, 0.0, 1.0,
-                      0.0, 0.0, 0.0, 0.0, 1.0};
-
-double limpaLeds[25] = {0.0, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0};
-
-
 // rotina para definição da intensidade de cores do led
-uint32_t matrix_rgb(double b, double r, double g)
-{
+uint32_t matrix_rgb(double b, double r, double g) {
     unsigned char R, G, B;
     R = r * 255;
     G = g * 255;
@@ -122,18 +108,28 @@ uint32_t matrix_rgb(double b, double r, double g)
 // rotina para acionar a matrix de leds - ws2812b
 void desenho_pio(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r, double g, double b)
 {
-
     for (int16_t i = 0; i < NUM_PIXELS; i++)
     {
-        if (i % 2 == 0)
+        if(r==1.0 && g==1.0 && b==1.0)
         {
-            valor_led = matrix_rgb(desenho[24 - i], r = 0.0, g = 0.0);
+            valor_led = matrix_rgb(desenho[24 - i], desenho[24 - i], desenho[24 - i]);
             pio_sm_put_blocking(pio, sm, valor_led);
-        }
-        else
-        {
-            valor_led = matrix_rgb(desenho[24 - i], r = 0.0, g = 0.0);
-            pio_sm_put_blocking(pio, sm, valor_led);
+        } else {
+            if (b == 1.0)
+            {
+                valor_led = matrix_rgb(desenho[24 - i], r = 0.0, g = 0.0);
+                pio_sm_put_blocking(pio, sm, valor_led);
+            }
+            if(r == 1.0)
+            {
+                valor_led = matrix_rgb(b = 0.0, desenho[24 - i], g = 0.0);
+                pio_sm_put_blocking(pio, sm, valor_led);
+            }
+            if(g == 1.0)
+            {
+                valor_led = matrix_rgb(b = 0.0, r = 0.0, desenho[24 - i]);
+                pio_sm_put_blocking(pio, sm, valor_led);
+            }
         }
     }
     imprimir_binario(valor_led);
@@ -141,12 +137,110 @@ void desenho_pio(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r
 // fim do código da matriz de leds
 
 // Funções com as animações dos membros do grupo
-void animacaoMaic(double desenho[], uint32_t valor_led, PIO pio, uint sm, double r, double g, double b)
+void animacaoMaic(uint32_t valor_led, PIO pio, uint sm, double r, double g, double b)
 {
-    desenho_pio(desenho, valor_led, pio, sm, r, g, b);
+    // Exibe cada frame por 100 ms (FPS = 10)
+    for (int i = 0; i < 25; i++) {
+        desenho_pio(framesMaic[i], valor_led, pio, sm, r, g, 1);
+        sleep_ms(100); // Delay para controlar o FPS
+    }
+
+    // Volta ao início
+    for (int i = 24; i >= 0; i--) {
+        desenho_pio(framesMaic[i], valor_led, pio, sm, r, g, 1);
+        sleep_ms(100); // Delay para controlar o FPS
+    }
 }
 
-// função principal
+void animacaoVINI(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
+    // Exibe cada frame por 500 ms (FPS = 2)
+    for (int i = 0; i < 4; i++) { // Total de 4 frames: "V", "I", "N", "I"
+        desenho_pio(framesVINI[i], valor_led, pio, sm, r, g, b);
+        sleep_ms(500); // Delay para controlar o FPS
+    }
+}
+
+// Função animação da tecla 3
+void animacao_tecla_3(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b, int fps)
+{
+    // Definição dos frames da animação ao apertar a tecla 3
+    double frame_t3_1[25] = {1.0, 0.0, 0.0, 0.0, 0.0,
+                             1.0, 0.0, 0.0, 0.0, 0.0,
+                             1.0, 0.0, 0.0, 0.0, 0.0,
+                             1.0, 0.0, 0.0, 0.0, 0.0,
+                             1.0, 0.0, 0.0, 0.0, 0.0};
+
+    double frame_t3_2[25] = {0.0, 1.0, 0.0, 0.0, 0.0,
+                             0.0, 1.0, 0.0, 0.0, 0.0,
+                             0.0, 1.0, 0.0, 0.0, 0.0,
+                             0.0, 1.0, 0.0, 0.0, 0.0,
+                             0.0, 1.0, 0.0, 0.0, 0.0};
+
+    double frame_t3_3[25] = {0.0, 0.0, 1.0, 0.0, 0.0,
+                             0.0, 0.0, 1.0, 0.0, 0.0,
+                             0.0, 0.0, 1.0, 0.0, 0.0,
+                             0.0, 0.0, 1.0, 0.0, 0.0,
+                             0.0, 0.0, 1.0, 0.0, 0.0};
+
+    double frame_t3_4[25] = {0.0, 0.0, 0.0, 1.0, 0.0,
+                             0.0, 0.0, 0.0, 1.0, 0.0,
+                             0.0, 0.0, 0.0, 1.0, 0.0,
+                             0.0, 0.0, 0.0, 1.0, 0.0,
+                             0.0, 0.0, 0.0, 1.0, 0.0};
+
+    double frame_t3_5[25] = {0.0, 0.0, 0.0, 0.0, 1.0,
+                             0.0, 0.0, 0.0, 0.0, 1.0,
+                             0.0, 0.0, 0.0, 0.0, 1.0,
+                             0.0, 0.0, 0.0, 0.0, 1.0,
+                             0.0, 0.0, 0.0, 0.0, 1.0};
+    // Fim definição dos frames da animação ao apertar a tecla 3
+
+    // Vetor de frames
+    double *frames[5] = {frame_t3_1, frame_t3_2, frame_t3_3, frame_t3_4, frame_t3_5};
+    int frame_index = 0;
+    int contador = 0;
+
+    // Loop para alternar os frames
+    while (contador < 50)
+    {
+        // Atualiza os LEDs com o frame atual
+        desenho_pio(frames[frame_index], valor_led, pio, sm, r, g, b);
+
+        // Passa para o próximo frame
+        frame_index = (frame_index + 1) % 5; // Alterna entre 0 a 4
+
+        // Espera até o próximo quadro para manter o FPS
+        sleep_ms(1000 / fps);
+
+        contador++;
+    }
+}
+// Fim da função animação da tecla 3
+
+void animacaoHumbertoZigZag(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
+    // Exibe cada frame por 100 ms (FPS = 10)
+    for (int i = 0; i < 25; i++) {
+        desenho_pio(framesHumberto[i], valor_led, pio, sm, r, g, b);
+        sleep_ms(100); // Delay para controlar o FPS
+    }
+
+    // Volta ao início
+    for (int i = 24; i >= 0; i--) {
+        desenho_pio(framesHumberto[i], valor_led, pio, sm, r, g, b);
+        sleep_ms(100); // Delay para controlar o FPS
+    }
+}
+
+void animacaoGabrielRostoMicrobit(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
+    for (int repeat = 0; repeat < 5; repeat++) { // Repetir a animação 5 vezes
+        for (int frame = 0; frame < 5; frame++) {
+            desenho_pio(frames_rosto_microbit[frame], valor_led, pio, sm, r, g, b);
+            sleep_ms(500); // Pausa de 500ms entre os frames
+        }
+    }
+}
+
+//função principal
 int main()
 {
     PIO pio = pio0;
@@ -167,7 +261,6 @@ int main()
         printf("clock set to %ld\n", clock_get_hz(clk_sys));
 
     // configuração do teclado
-    //  pico_keypad_init(columns, rows, KEY_MAP);
     char caracter_press;
 
     // configurações da PIO
@@ -177,7 +270,7 @@ int main()
 
     gpio_init(GPIO_LED);
     gpio_set_dir(GPIO_LED, GPIO_OUT);
-
+  
     while (true)
     {
         caracter_press = detectar_tecla();
@@ -185,19 +278,27 @@ int main()
 
         //   Avaliação de caractere para o LED
         if (caracter_press != '\0')
-        {
-            if (caracter_press == '0')
-            {
-                animacaoMaic(desenho, valor_led, pio, sm, r, g, b);
-                gpio_put(GPIO_LED, false);
-            }
-            if (caracter_press == '7')
-            {
+        {   
+            if(caracter_press == '0') {
+                animacaoMaic(valor_led, pio, sm, r, g, 1);
+            } else if(caracter_press == '1') {
+                 animacaoHumbertoZigZag(pio, sm, valor_led, r, g, 1);
+            } else if(caracter_press == '2') {
+                animacaoVINI(pio, sm, valor_led, r, g, 1);
+            } else if(caracter_press == '3') {
+                 animacaoGabrielRostoMicrobit(pio, sm, valor_led, r, g, b);
+            } else if(caracter_press == 'B') {
+                desenho_pio(desenhoTeclaB, valor_led, pio, sm, r, g, 1);
+            } else if(caracter_press == 'C') {
+                desenho_pio(desenhoTeclaC, valor_led, pio, sm, 1, g, b);
+            } else if(caracter_press == 'D') {
+                desenho_pio(desenhoTeclaD, valor_led, pio, sm, r, 1, b);
+            } else if(caracter_press == '#') {
+                desenho_pio(desenhoTeclaSerquilha, valor_led, pio, sm, 1, 1, 1);
+            } else if (caracter_press == '7') {
                 animacaoKaique(valor_led, pio, sm);
-                gpio_put(GPIO_LED, true);
             }
         }
-
         sleep_ms(100);
     }
 }
