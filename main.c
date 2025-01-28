@@ -196,7 +196,7 @@ void animacaoHumbertoZigZag(PIO pio, uint sm, uint32_t valor_led, double r, doub
 void animacaoGabrielRostoMicrobit(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
     for (int repeat = 0; repeat < 5; repeat++) { // Repetir a animação 5 vezes
         for (int frame = 0; frame < 5; frame++) {
-            desenho_pio(frames_rosto_microbit[frame], valor_led, pio, sm, r, g, b);
+            desenho_pio(frames_rosto_microbit[frame], valor_led, pio, sm, r, g, 1);
             sleep_ms(500); // Pausa de 500ms entre os frames
         }
     }
@@ -258,6 +258,12 @@ int main()
                  animacaoGabrielRostoMicrobit(pio, sm, valor_led, r, g, b);
             } else if(caracter_press == '4') { // tecla 4 frame ANAC
                 animacaoANAC(pio, sm, valor_led, 1.0, 0.5, 0.0, 10);
+            } else if(caracter_press == '5') {
+                animacaoDecioCascata(pio, sm, valor_led, 0.0, 1.0, 0.0, 200);
+            } else if(caracter_press == '6') {
+                animacaoKaique(valor_led, pio, sm);
+            } else if(caracter_press == 'A') {
+                desenho_pio(desenhoTeclaA, valor_led, pio, sm, r, g, 1);
             } else if(caracter_press == 'B') {
                 desenho_pio(desenhoTeclaB, valor_led, pio, sm, r, g, 1);
             } else if(caracter_press == 'C') {
@@ -266,8 +272,6 @@ int main()
                 desenho_pio(desenhoTeclaD, valor_led, pio, sm, r, 1, b);
             } else if(caracter_press == '#') {
                 desenho_pio(desenhoTeclaSerquilha, valor_led, pio, sm, 1, 1, 1);
-            } else if (caracter_press == '7') {
-                animacaoKaique(valor_led, pio, sm);
             }
         }
         sleep_ms(100);
