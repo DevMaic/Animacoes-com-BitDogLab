@@ -7,9 +7,9 @@
 #include "hardware/adc.h"
 #include "pico/bootrom.h"
 #include "hardware/timer.h"
-//frames das animações
+// frames das animações
 #include "framesAnimacao.c"
-//arquivo .pio
+// arquivo .pio
 #include "pio_matrix.pio.h"
 // define o LED de saída
 #include "animacoesKaique.h"
@@ -97,7 +97,8 @@ char detectar_tecla()
 #define OUT_PIN 9
 
 // rotina para definição da intensidade de cores do led
-uint32_t matrix_rgb(double b, double r, double g) {
+uint32_t matrix_rgb(double b, double r, double g)
+{
     unsigned char R, G, B;
     R = r * 255;
     G = g * 255;
@@ -108,14 +109,14 @@ uint32_t matrix_rgb(double b, double r, double g) {
 // rotina para acionar a matrix de leds - ws2812b
 void desenho_pio(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r, double g, double b)
 {
-    for (int16_t i = 0; i < NUM_PIXELS; i++)
+    for(int16_t i = 0; i < NUM_PIXELS; i++)
     {
         if(r==1.0 && g==1.0 && b==1.0)
         {
             valor_led = matrix_rgb(desenho[24 - i], desenho[24 - i], desenho[24 - i]);
             pio_sm_put_blocking(pio, sm, valor_led);
         } else {
-            if (b == 1.0)
+            if(b == 1.0)
             {
                 valor_led = matrix_rgb(desenho[24 - i], r = 0.0, g = 0.0);
                 pio_sm_put_blocking(pio, sm, valor_led);
@@ -160,62 +161,23 @@ void animacaoVINI(PIO pio, uint sm, uint32_t valor_led, double r, double g, doub
     }
 }
 
-// Função animação da tecla 3
-void animacao_tecla_3(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b, int fps)
+
+// Função animação Decio
+
+void animacaoDecioCascata(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b, int delay_ms)
 {
-    // Definição dos frames da animação ao apertar a tecla 3
-    double frame_t3_1[25] = {1.0, 0.0, 0.0, 0.0, 0.0,
-                             1.0, 0.0, 0.0, 0.0, 0.0,
-                             1.0, 0.0, 0.0, 0.0, 0.0,
-                             1.0, 0.0, 0.0, 0.0, 0.0,
-                             1.0, 0.0, 0.0, 0.0, 0.0};
-
-    double frame_t3_2[25] = {0.0, 1.0, 0.0, 0.0, 0.0,
-                             0.0, 1.0, 0.0, 0.0, 0.0,
-                             0.0, 1.0, 0.0, 0.0, 0.0,
-                             0.0, 1.0, 0.0, 0.0, 0.0,
-                             0.0, 1.0, 0.0, 0.0, 0.0};
-
-    double frame_t3_3[25] = {0.0, 0.0, 1.0, 0.0, 0.0,
-                             0.0, 0.0, 1.0, 0.0, 0.0,
-                             0.0, 0.0, 1.0, 0.0, 0.0,
-                             0.0, 0.0, 1.0, 0.0, 0.0,
-                             0.0, 0.0, 1.0, 0.0, 0.0};
-
-    double frame_t3_4[25] = {0.0, 0.0, 0.0, 1.0, 0.0,
-                             0.0, 0.0, 0.0, 1.0, 0.0,
-                             0.0, 0.0, 0.0, 1.0, 0.0,
-                             0.0, 0.0, 0.0, 1.0, 0.0,
-                             0.0, 0.0, 0.0, 1.0, 0.0};
-
-    double frame_t3_5[25] = {0.0, 0.0, 0.0, 0.0, 1.0,
-                             0.0, 0.0, 0.0, 0.0, 1.0,
-                             0.0, 0.0, 0.0, 0.0, 1.0,
-                             0.0, 0.0, 0.0, 0.0, 1.0,
-                             0.0, 0.0, 0.0, 0.0, 1.0};
-    // Fim definição dos frames da animação ao apertar a tecla 3
-
-    // Vetor de frames
-    double *frames[5] = {frame_t3_1, frame_t3_2, frame_t3_3, frame_t3_4, frame_t3_5};
-    int frame_index = 0;
-    int contador = 0;
-
-    // Loop para alternar os frames
-    while (contador < 50)
+    // Repetir a animação
+    for (int ciclo = 0; ciclo < 3; ciclo++) // Número de ciclos da cascata
     {
-        // Atualiza os LEDs com o frame atual
-        desenho_pio(frames[frame_index], valor_led, pio, sm, r, g, b);
-
-        // Passa para o próximo frame
-        frame_index = (frame_index + 1) % 5; // Alterna entre 0 a 4
-
-        // Espera até o próximo quadro para manter o FPS
-        sleep_ms(1000 / fps);
-
-        contador++;
+        for (int frame = 0; frame < 5; frame++) // Itera sobre os frames
+        {
+            desenho_pio(framesDec[frame], valor_led, pio, sm, r, g, b);
+            sleep_ms(delay_ms); // Controle de velocidade
+        }
     }
 }
-// Fim da função animação da tecla 3
+
+// Fim da função animação Decio
 
 void animacaoHumbertoZigZag(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
     // Exibe cada frame por 100 ms (FPS = 10)
@@ -239,6 +201,7 @@ void animacaoGabrielRostoMicrobit(PIO pio, uint sm, uint32_t valor_led, double r
         }
     }
 }
+
 void animacaoANAC(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b, int fps) {
     for (int frame_index = 0; frame_index < 5; frame_index++) { 
         desenho_pio(framesANAC[frame_index], valor_led, pio, sm, r, g, b);
@@ -246,8 +209,7 @@ void animacaoANAC(PIO pio, uint sm, uint32_t valor_led, double r, double g, doub
     }
 }
 
-
-//função principal
+// função principal
 int main()
 {
     PIO pio = pio0;
