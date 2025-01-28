@@ -1,4 +1,3 @@
-
 // Frames da animação (25 frames, um para cada LED)
 double framesHumberto[25][25] = {
     // Frame 1: Posição (0, 0)
@@ -474,7 +473,7 @@ double framesDec[5][25] = {
      0.0, 0.0, 0.0, 1.0, 0.0,
      0.0, 0.0, 0.0, 1.0, 0.0,
      0.0, 0.0, 0.0, 1.0, 0.0},
-
+  
     // Frame 5
     {0.0, 0.0, 0.0, 0.0, 1.0,
      0.0, 0.0, 0.0, 0.0, 1.0,

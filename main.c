@@ -109,26 +109,24 @@ uint32_t matrix_rgb(double b, double r, double g)
 // rotina para acionar a matrix de leds - ws2812b
 void desenho_pio(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r, double g, double b)
 {
-    for (int16_t i = 0; i < NUM_PIXELS; i++)
+    for(int16_t i = 0; i < NUM_PIXELS; i++)
     {
-        if (r == 1.0 && g == 1.0 && b == 1.0)
+        if(r==1.0 && g==1.0 && b==1.0)
         {
             valor_led = matrix_rgb(desenho[24 - i], desenho[24 - i], desenho[24 - i]);
             pio_sm_put_blocking(pio, sm, valor_led);
-        }
-        else
-        {
-            if (b == 1.0)
+        } else {
+            if(b == 1.0)
             {
                 valor_led = matrix_rgb(desenho[24 - i], r = 0.0, g = 0.0);
                 pio_sm_put_blocking(pio, sm, valor_led);
             }
-            if (r == 1.0)
+            if(r == 1.0)
             {
                 valor_led = matrix_rgb(b = 0.0, desenho[24 - i], g = 0.0);
                 pio_sm_put_blocking(pio, sm, valor_led);
             }
-            if (g == 1.0)
+            if(g == 1.0)
             {
                 valor_led = matrix_rgb(b = 0.0, r = 0.0, desenho[24 - i]);
                 pio_sm_put_blocking(pio, sm, valor_led);
@@ -143,29 +141,26 @@ void desenho_pio(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r
 void animacaoMaic(uint32_t valor_led, PIO pio, uint sm, double r, double g, double b)
 {
     // Exibe cada frame por 100 ms (FPS = 10)
-    for (int i = 0; i < 25; i++)
-    {
+    for (int i = 0; i < 25; i++) {
         desenho_pio(framesMaic[i], valor_led, pio, sm, r, g, 1);
         sleep_ms(100); // Delay para controlar o FPS
     }
 
     // Volta ao início
-    for (int i = 24; i >= 0; i--)
-    {
+    for (int i = 24; i >= 0; i--) {
         desenho_pio(framesMaic[i], valor_led, pio, sm, r, g, 1);
         sleep_ms(100); // Delay para controlar o FPS
     }
 }
 
-void animacaoVINI(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b)
-{
+void animacaoVINI(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
     // Exibe cada frame por 500 ms (FPS = 2)
-    for (int i = 0; i < 4; i++)
-    { // Total de 4 frames: "V", "I", "N", "I"
+    for (int i = 0; i < 4; i++) { // Total de 4 frames: "V", "I", "N", "I"
         desenho_pio(framesVINI[i], valor_led, pio, sm, r, g, b);
         sleep_ms(500); // Delay para controlar o FPS
     }
 }
+
 
 // Função animação Decio
 
@@ -184,40 +179,33 @@ void animacaoDecioCascata(PIO pio, uint sm, uint32_t valor_led, double r, double
 
 // Fim da função animação Decio
 
-void animacaoHumbertoZigZag(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b)
-{
+void animacaoHumbertoZigZag(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
     // Exibe cada frame por 100 ms (FPS = 10)
-    for (int i = 0; i < 25; i++)
-    {
+    for (int i = 0; i < 25; i++) {
         desenho_pio(framesHumberto[i], valor_led, pio, sm, r, g, b);
         sleep_ms(100); // Delay para controlar o FPS
     }
 
     // Volta ao início
-    for (int i = 24; i >= 0; i--)
-    {
+    for (int i = 24; i >= 0; i--) {
         desenho_pio(framesHumberto[i], valor_led, pio, sm, r, g, b);
         sleep_ms(100); // Delay para controlar o FPS
     }
 }
 
-void animacaoGabrielRostoMicrobit(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b)
-{
-    for (int repeat = 0; repeat < 5; repeat++)
-    { // Repetir a animação 5 vezes
-        for (int frame = 0; frame < 5; frame++)
-        {
+void animacaoGabrielRostoMicrobit(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
+    for (int repeat = 0; repeat < 5; repeat++) { // Repetir a animação 5 vezes
+        for (int frame = 0; frame < 5; frame++) {
             desenho_pio(frames_rosto_microbit[frame], valor_led, pio, sm, r, g, b);
             sleep_ms(500); // Pausa de 500ms entre os frames
         }
     }
 }
-void animacaoANAC(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b, int fps)
-{
-    for (int frame_index = 0; frame_index < 5; frame_index++)
-    {
+
+void animacaoANAC(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b, int fps) {
+    for (int frame_index = 0; frame_index < 5; frame_index++) { 
         desenho_pio(framesANAC[frame_index], valor_led, pio, sm, r, g, b);
-        sleep_ms(1000 / fps);
+        sleep_ms(1000 / fps); 
     }
 }
 
@@ -251,7 +239,7 @@ int main()
 
     gpio_init(GPIO_LED);
     gpio_set_dir(GPIO_LED, GPIO_OUT);
-
+  
     while (true)
     {
         caracter_press = detectar_tecla();
@@ -259,49 +247,26 @@ int main()
 
         //   Avaliação de caractere para o LED
         if (caracter_press != '\0')
-        {
-            if (caracter_press == '0')
-            {
+        {   
+            if(caracter_press == '0') {
                 animacaoMaic(valor_led, pio, sm, r, g, 1);
-            }
-            else if (caracter_press == '1')
-            {
-                animacaoHumbertoZigZag(pio, sm, valor_led, r, g, 1);
-            }
-            else if (caracter_press == '2')
-            {
+            } else if(caracter_press == '1') {
+                 animacaoHumbertoZigZag(pio, sm, valor_led, r, g, 1);
+            } else if(caracter_press == '2') {
                 animacaoVINI(pio, sm, valor_led, r, g, 1);
-            }
-            else if (caracter_press == '3')
-            {
-                animacaoGabrielRostoMicrobit(pio, sm, valor_led, r, g, b);
-            }
-            else if (caracter_press == '4')
-            { // tecla 4 frame ANAC
+            } else if(caracter_press == '3') {
+                 animacaoGabrielRostoMicrobit(pio, sm, valor_led, r, g, b);
+            } else if(caracter_press == '4') { // tecla 4 frame ANAC
                 animacaoANAC(pio, sm, valor_led, 1.0, 0.5, 0.0, 10);
-            }
-            else if (caracter_press == '5')
-            {
-                animacaoDecioCascata(pio, sm, valor_led, 0.0, 1.0, 0.0, 200);
-            }
-            else if (caracter_press == 'B')
-            {
+            } else if(caracter_press == 'B') {
                 desenho_pio(desenhoTeclaB, valor_led, pio, sm, r, g, 1);
-            }
-            else if (caracter_press == 'C')
-            {
+            } else if(caracter_press == 'C') {
                 desenho_pio(desenhoTeclaC, valor_led, pio, sm, 1, g, b);
-            }
-            else if (caracter_press == 'D')
-            {
+            } else if(caracter_press == 'D') {
                 desenho_pio(desenhoTeclaD, valor_led, pio, sm, r, 1, b);
-            }
-            else if (caracter_press == '#')
-            {
+            } else if(caracter_press == '#') {
                 desenho_pio(desenhoTeclaSerquilha, valor_led, pio, sm, 1, 1, 1);
-            }
-            else if (caracter_press == '7')
-            {
+            } else if (caracter_press == '7') {
                 animacaoKaique(valor_led, pio, sm);
             }
         }
