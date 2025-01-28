@@ -239,6 +239,13 @@ void animacaoGabrielRostoMicrobit(PIO pio, uint sm, uint32_t valor_led, double r
         }
     }
 }
+void animacaoANAC(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b, int fps) {
+    for (int frame_index = 0; frame_index < 5; frame_index++) { 
+        desenho_pio(framesANAC[frame_index], valor_led, pio, sm, r, g, b);
+        sleep_ms(1000 / fps); 
+    }
+}
+
 
 //função principal
 int main()
@@ -287,6 +294,8 @@ int main()
                 animacaoVINI(pio, sm, valor_led, r, g, 1);
             } else if(caracter_press == '3') {
                  animacaoGabrielRostoMicrobit(pio, sm, valor_led, r, g, b);
+            } else if(caracter_press == '4') { // tecla 4 frame ANAC
+                animacaoANAC(pio, sm, valor_led, 1.0, 0.5, 0.0, 10);
             } else if(caracter_press == 'B') {
                 desenho_pio(desenhoTeclaB, valor_led, pio, sm, r, g, 1);
             } else if(caracter_press == 'C') {
