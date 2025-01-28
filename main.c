@@ -151,6 +151,15 @@ void animacaoMaic(uint32_t valor_led, PIO pio, uint sm, double r, double g, doub
     }
 }
 
+void animacaoVINI(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
+    // Exibe cada frame por 500 ms (FPS = 2)
+    for (int i = 0; i < 4; i++) { // Total de 4 frames: "V", "I", "N", "I"
+        desenho_pio(framesVINI[i], valor_led, pio, sm, r, g, b);
+        sleep_ms(500); // Delay para controlar o FPS
+    }
+}
+
+
 // Função animação da tecla 3
 void animacao_tecla_3(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b, int fps)
 {
@@ -260,15 +269,16 @@ int main()
 
         //   Avaliação de caractere para o LED
         if (caracter_press != '\0')
-        {
+        {   
+            
             if(caracter_press == '0') {
                 animacaoMaic(valor_led, pio, sm, r, g, 1);
             } else if(caracter_press == '1') {
                  animacaoHumbertoZigZag(pio, sm, valor_led, r, g, 1);
             } else if(caracter_press == '3') {
                 animacao_tecla_3(pio, sm, valor_led, r, g, 1, 10);
-            } else if(caracter_press == 'A') {
-                desenho_pio(desenhoTeclaA, valor_led, pio, sm, r, g, 1);
+            } else if(caracter_press == '2') {
+                animacaoVINI(pio, sm, valor_led, r, g, 1);
             } else if(caracter_press == 'B') {
                 desenho_pio(desenhoTeclaB, valor_led, pio, sm, r, g, 1);
             } else if(caracter_press == 'C') {
