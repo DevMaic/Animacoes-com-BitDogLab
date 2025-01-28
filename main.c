@@ -231,6 +231,16 @@ void animacaoHumbertoZigZag(PIO pio, uint sm, uint32_t valor_led, double r, doub
     }
 }
 
+void animacaoGabrielRostoMicrobit(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
+    for (int repeat = 0; repeat < 5; repeat++) { // Repetir a animação 5 vezes
+        for (int frame = 0; frame < 5; frame++) {
+            desenho_pio(frames_rosto_microbit[frame], valor_led, pio, sm, r, g, b);
+            sleep_ms(500); // Pausa de 500ms entre os frames
+        }
+    }
+}
+
+
 //função principal
 int main()
 {
@@ -262,6 +272,7 @@ int main()
     gpio_init(GPIO_LED);
     gpio_set_dir(GPIO_LED, GPIO_OUT);
 
+
     while (true)
     {
         caracter_press = detectar_tecla();
@@ -275,10 +286,10 @@ int main()
                 animacaoMaic(valor_led, pio, sm, r, g, 1);
             } else if(caracter_press == '1') {
                  animacaoHumbertoZigZag(pio, sm, valor_led, r, g, 1);
-            } else if(caracter_press == '3') {
-                animacao_tecla_3(pio, sm, valor_led, r, g, 1, 10);
             } else if(caracter_press == '2') {
                 animacaoVINI(pio, sm, valor_led, r, g, 1);
+            } else if(caracter_press == '3') {
+                 animacaoGabrielRostoMicrobit(pio, sm, valor_led, r, g, b);
             } else if(caracter_press == 'B') {
                 desenho_pio(desenhoTeclaB, valor_led, pio, sm, r, g, 1);
             } else if(caracter_press == 'C') {
@@ -290,5 +301,6 @@ int main()
             }
         }
         sleep_ms(100);
+
     }
 }
