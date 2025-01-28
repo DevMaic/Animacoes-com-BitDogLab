@@ -12,6 +12,7 @@
 //arquivo .pio
 #include "pio_matrix.pio.h"
 // define o LED de saída
+#include "animacoesKaique.h"
 #define GPIO_LED 13
 
 // parte do código relativa ao teclado matricial
@@ -159,7 +160,6 @@ void animacaoVINI(PIO pio, uint sm, uint32_t valor_led, double r, double g, doub
     }
 }
 
-
 // Função animação da tecla 3
 void animacao_tecla_3(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b, int fps)
 {
@@ -240,7 +240,6 @@ void animacaoGabrielRostoMicrobit(PIO pio, uint sm, uint32_t valor_led, double r
     }
 }
 
-
 //função principal
 int main()
 {
@@ -271,8 +270,7 @@ int main()
 
     gpio_init(GPIO_LED);
     gpio_set_dir(GPIO_LED, GPIO_OUT);
-
-
+  
     while (true)
     {
         caracter_press = detectar_tecla();
@@ -281,7 +279,6 @@ int main()
         //   Avaliação de caractere para o LED
         if (caracter_press != '\0')
         {   
-            
             if(caracter_press == '0') {
                 animacaoMaic(valor_led, pio, sm, r, g, 1);
             } else if(caracter_press == '1') {
@@ -298,9 +295,10 @@ int main()
                 desenho_pio(desenhoTeclaD, valor_led, pio, sm, r, 1, b);
             } else if(caracter_press == '#') {
                 desenho_pio(desenhoTeclaSerquilha, valor_led, pio, sm, 1, 1, 1);
+            } else if (caracter_press == '7') {
+                animacaoKaique(valor_led, pio, sm);
             }
         }
         sleep_ms(100);
-
     }
 }
