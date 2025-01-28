@@ -12,6 +12,8 @@
 // define o LED de saída
 #define GPIO_LED 13
 
+#include "animacoesKaique.h"
+
 // parte do código relativa ao teclado matricial
 uint columns[4] = {4, 3, 2, 1};
 uint rows[4] = {8, 7, 6, 5};
@@ -106,12 +108,6 @@ double limpaLeds[25] = {0.0, 0.0, 0.0, 0.0, 0.0,
                         0.0, 0.0, 0.0, 0.0, 0.0,
                         0.0, 0.0, 0.0, 0.0, 0.0};
 
-// vetor para criar imagem na matriz de led - 2
-double desenho2[25] = {0.0, 1.0, 0.0, 1.0, 0.0,
-                       1.0, 0.0, 1.0, 0.0, 1.0,
-                       1.0, 0.0, 0.0, 0.0, 1.0,
-                       0.0, 1.0, 0.0, 1.0, 0.0,
-                       0.0, 0.0, 1.0, 0.0, 0.0};
 
 // rotina para definição da intensidade de cores do led
 uint32_t matrix_rgb(double b, double r, double g)
@@ -148,13 +144,6 @@ void desenho_pio(double *desenho, uint32_t valor_led, PIO pio, uint sm, double r
 void animacaoMaic(double desenho[], uint32_t valor_led, PIO pio, uint sm, double r, double g, double b)
 {
     desenho_pio(desenho, valor_led, pio, sm, r, g, b);
-}
-void animacaoKaique(double desenho[], uint32_t valor_led, PIO pio, uint sm, double r, double g, double b)
-{
-    r = 1.0;  
-    g = 0.0;  
-    b = 0.0;  
-    desenho_pio(desenho2, valor_led, pio, sm, r, g, b);  
 }
 
 // função principal
@@ -202,10 +191,10 @@ int main()
                 animacaoMaic(desenho, valor_led, pio, sm, r, g, b);
                 gpio_put(GPIO_LED, false);
             }
-              if (caracter_press == '7') 
+            if (caracter_press == '7')
             {
-                animacaoKaique(desenho2, valor_led, pio, sm, r, g, b);  // Chama a animação com a cor vermelha
-                gpio_put(GPIO_LED, true);  // Ativa o LED indicando que a animação foi executada
+                animacaoKaique(valor_led, pio, sm);
+                gpio_put(GPIO_LED, true);
             }
         }
 
