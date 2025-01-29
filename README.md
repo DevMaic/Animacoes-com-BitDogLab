@@ -117,3 +117,7 @@ Este projeto utiliza o **Raspberry Pi Pico W**, **teclado matricial**, e uma **m
 - Kaique Almeida Barbosa
 - Maic de Oliveira Santos
 - Vinícius Ramos de Araújo
+
+## Vídeo de Demonstração
+
+[Assista ao vídeo de demonstração aqui](https://www.dropbox.com/scl/fi/ovgytv7j4utnk3mtn7y95/2025-01-28-21-02-34.mkv?rlkey=yia9k8oo79p3x682wps6fcmj2&st=g9d3co0e&dl=0)
