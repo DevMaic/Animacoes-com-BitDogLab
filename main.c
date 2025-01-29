@@ -155,9 +155,9 @@ void animacaoMaic(uint32_t valor_led, PIO pio, uint sm, double r, double g, doub
 
 void animacaoVINI(PIO pio, uint sm, uint32_t valor_led, double r, double g, double b) {
     // Exibe cada frame por 500 ms (FPS = 2)
-    for (int i = 0; i < 4; i++) { // Total de 4 frames: "V", "I", "N", "I"
+    for (int i = 0; i < 8; i++) { // Total de 4 frames: "V", "I", "N", "I"
         desenho_pio(framesVINI[i], valor_led, pio, sm, r, g, b);
-        sleep_ms(500); // Delay para controlar o FPS
+        sleep_ms(700); // Delay para controlar o FPS
     }
 }
 
